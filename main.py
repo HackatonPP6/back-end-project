@@ -13,7 +13,6 @@ from src.service.oracle import OracleService
 from src.domain.enum.status import Status
 
 app = FastAPI()
-            # var ws = new WebSocket("wss://backend-hacktoon.onrender.com/ws");
 returnDict = {
     "Aws.SP": Status.RESOLVED.value,
     "Aws.Vi": Status.RESOLVED.value,
@@ -37,7 +36,7 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
-            var ws = new WebSocket("ws://localhost:8000/ws");
+            var ws = new WebSocket("wss://backend-hacktoon.onrender.com/ws");
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
