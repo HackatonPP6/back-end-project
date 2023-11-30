@@ -1,3 +1,5 @@
+import json
+from fastapi.responses import HTMLResponse
 import uvicorn
 
 from fastapi import Depends, FastAPI, WebSocket
@@ -5,14 +7,80 @@ import asyncio
 from src.controller.log import LogController
 from src.controller.cache import CacheController
 from fastapi.middleware.cors import CORSMiddleware
+from src.service.jira import JiraService
+from src.service.oracle import OracleService
+from src.domain.enum.status import Status
+
 app = FastAPI()
+
+returnDict = {
+    "Aws.SP": 'Success',
+    "Aws.Vi": 'Success',
+    "Oracle.Vi": 'Success',
+    "Oracle.SP": 'Success',
+    "Jira": "Success"
+}
+
+html = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat</title>
+    </head>
+    <body>
+        <h1>WebSocket Chat</h1>
+        <form action="" onsubmit="sendMessage(event)">
+            <input type="text" id="messageText" autocomplete="off"/>
+            <button>Send</button>
+        </form>
+        <ul id='messages'>
+        </ul>
+        <script>
+            var ws = new WebSocket("ws://backend-hacktoon.onrender.com/ws");
+            ws.onmessage = function(event) {
+                var messages = document.getElementById('messages')
+                var message = document.createElement('li')
+                var content = document.createTextNode(event.data)
+                message.appendChild(content)
+                messages.appendChild(message)
+            };
+            function sendMessage(event) {
+                var input = document.getElementById("messageText")
+                ws.send(input.value)
+                input.value = ''
+                event.preventDefault()
+            }
+        </script>
+    </body>
+</html>
+"""
+ 
+@app.get("/bruno")
+async def get():
+    return HTMLResponse(html)
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
-        await asyncio.sleep(10)
-        mock_message = {"Aws.virginia": "active", "Aws.saoPaulo": "active", "Jira":"Instável", "Oracle.Vinhedo": 'Fora do Ar', 'Oracle.SaoPaulo': 'active' }
-        await websocket.send_json(mock_message)
+        await asyncio.sleep(5)
+        # await websocket.send_text("aa")
+        lista_jira, jira_tem_degradation = JiraService.getJiraInfo()
+        simplified_infoJira = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
+        returnDict["Jira"] = Status.DEGRADATION if jira_tem_degradation else Status.RESOLVED
+        await websocket.send_json(simplified_infoJira)
+
+        lista_ocl, ocl_sp_tem_degradation, ocl_vi_tem_degradation = OracleService.getOracleInfo()
+        simplified_infoOracle = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_ocl, indent=2))]
+        
+        returnDict["Oracle.Vi"] = Status.DEGRADATION if ocl_vi_tem_degradation else Status.RESOLVED
+        returnDict["Oracle.SP"] = Status.DEGRADATION if ocl_sp_tem_degradation else Status.RESOLVED
+
+        
+
+        await websocket.send_json(simplified_infoOracle)
+        #TODO: Após retornar ao frontend, chamar api mongodb
+
 
 origins = [
     "http://localhost.tiangolo.com",

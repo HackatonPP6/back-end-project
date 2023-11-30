@@ -1,7 +1,8 @@
 from datetime import datetime
+
 class Logs():
     def __init__(self, service, status, provider):
-        self.horario = datetime.now()
+        self.horario = datetime.now().isoformat()
         self.service = service
         self.status = status
         self.provider = provider
@@ -28,3 +29,11 @@ class Logs():
         print(f"Status: {self.status}")
         print(f"Horario: {self.horario}")
         print(f"Provider: {self.provider}")
+
+    def dictionaryTransform(self):
+        return {
+        "horario": self.horario,
+        "status": self.status,
+        "service": self.service,
+        "provider": self.provider
+        }
