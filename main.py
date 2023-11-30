@@ -8,6 +8,7 @@ from src.controller.log import LogController
 from src.controller.cache import CacheController
 from fastapi.middleware.cors import CORSMiddleware
 from src.service.jira import JiraService
+from src.service.aws import AwsService
 from src.service.oracle import OracleService
 from src.domain.enum.status import Status
 
@@ -36,7 +37,7 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
-            var ws = new WebSocket("ws://backend-hacktoon.onrender.com/ws");
+            var ws = new WebSocket("wss://backend-hacktoon.onrender.com/ws");
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -65,10 +66,10 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         await asyncio.sleep(5)
         # await websocket.send_text("aa")
-        # lista_jira, jira_tem_degradation = JiraService.getJiraInfo()
-        # simplified_infoJira = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
-        # returnDict["Jira"] = Status.DEGRADATION if jira_tem_degradation else Status.RESOLVED
-        # await websocket.send_json(simplified_infoJira)
+        lista_jira, jira_tem_degradation = JiraService.getJiraInfo()
+        simplified_infoJira = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
+        returnDict["Jira"] = Status.DEGRADATION if jira_tem_degradation else Status.RESOLVED
+        await websocket.send_json(simplified_infoJira)
 
         lista_ocl, ocl_sp_tem_degradation, ocl_vi_tem_degradation = OracleService.getOracleInfo()
         simplified_infoOracle = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_ocl, indent=2))]
@@ -76,7 +77,10 @@ async def websocket_endpoint(websocket: WebSocket):
         returnDict["Oracle.Vi"] = Status.DEGRADATION if ocl_vi_tem_degradation else Status.RESOLVED
         returnDict["Oracle.SP"] = Status.DEGRADATION if ocl_sp_tem_degradation else Status.RESOLVED
 
-        
+        # lista_aws, aws_sp_tem_degradation, aws_vi_tem_degradation = AwsService.getJiraInfo()
+        # simplified_infoAWS = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
+        # returnDict["Jira"] = Status.DEGRADATION if jira_tem_degradation else Status.RESOLVED
+        # await websocket.send_json(simplified_infoJira)        
 
         await websocket.send_json(simplified_infoOracle)
         #TODO: Após retornar ao frontend, chamar api mongodb

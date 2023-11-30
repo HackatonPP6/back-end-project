@@ -3,6 +3,7 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from src.domain.logs import Logs
+from src.domain.enum.status import Status
 
 class AwsService:
     def get_AWS_log():
@@ -37,17 +38,21 @@ class AwsService:
     
             for linha in linhas:
                 n_nome = linha.find_elements(By.XPATH, './/*')[3].get_attribute("innerHTML")
-                n_status = linha.find_elements(By.XPATH, './/*')[15].get_attribute("aria-label").strip()
+                n_status = Status.RESOLVED.value if linha.find_elements(By.XPATH, './/*')[15].get_attribute("aria-label").strip() == "Resolved" else Status.DEGRADATION.value
             
                 if "Virginia" in n_nome:
                     n_nome = n_nome.split("(")[0] + "(N. Virginia)"
+                    if not tem_degradation_vi and n_status == Status.DEGRADATION.value:
+                        tem_degradation_vi = True
+
                     aws_status.append(Logs(n_nome, n_status, "AWS.Virginia"))
                 else:
+                    if not tem_degradation_sp and n_status == Status.DEGRADATION.value:
+                        tem_degradation_sp = True
+
                     n_nome = n_nome.split("(")[0] + "(Sao Paulo)"
                     aws_status.append(Logs(n_nome, n_status, "AWS.SaoPaulo"))
         finally:
             navegador.quit()
     
-        return aws_status
-    
-    print(get_AWS_log())
+        return [aws_status, tem_degradation_sp, tem_degradation_vi]
