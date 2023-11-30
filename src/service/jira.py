@@ -1,12 +1,14 @@
 from selenium import webdriver
-import time
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
 from src.domain.enum.status import Status
 from src.domain.logs import Logs
 class JiraService():
     def getJiraInfo():
-        ini = time.time()
-        navegador = webdriver.Firefox()
+
+        options = Options()
+        options.headless = True
+        navegador = webdriver.Firefox(options=options)
         tem_degradation = False
     
         try:
@@ -32,7 +34,6 @@ class JiraService():
         finally:
             navegador.quit()
     
-        print(time.time() - ini)
         returnList = []
         for x in brazilianReports:
             returnList.append(Logs.dictionaryTransform(x))

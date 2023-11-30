@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -7,7 +8,9 @@ from src.domain.enum.status import Status
 
 class AwsService:
     def get_AWS_log():
-        navegador = webdriver.Chrome()
+        options = Options()
+        options.headless = True
+        navegador = webdriver.Firefox(options=options)
         aws_status = []
 
         tem_degradation_sp = False
@@ -17,6 +20,7 @@ class AwsService:
             navegador.get('https://health.aws.amazon.com/health/status')
     
             time.sleep(2)
+            brazilianReports = list()
             filtro = navegador.find_element(By.ID, 'status-history-property-filter').find_elements(By.XPATH, './/*')[10]
     
             filtro.send_keys("N. Virginia")
@@ -45,14 +49,17 @@ class AwsService:
                     if not tem_degradation_vi and n_status == Status.DEGRADATION.value:
                         tem_degradation_vi = True
 
-                    aws_status.append(Logs(n_nome, n_status, "AWS.Virginia"))
+                    brazilianReports.append(Logs(n_nome, n_status, "AWS.Virginia"))
                 else:
                     if not tem_degradation_sp and n_status == Status.DEGRADATION.value:
                         tem_degradation_sp = True
 
                     n_nome = n_nome.split("(")[0] + "(Sao Paulo)"
-                    aws_status.append(Logs(n_nome, n_status, "AWS.SaoPaulo"))
+                    brazilianReports.append(Logs(n_nome, n_status, "AWS.SaoPaulo"))
         finally:
             navegador.quit()
-    
-        return [aws_status, tem_degradation_sp, tem_degradation_vi]
+     
+        returnList = []
+        for x in brazilianReports:
+            returnList.append(Logs.dictionaryTransform(x))
+        return [returnList, tem_degradation_sp, tem_degradation_vi]
