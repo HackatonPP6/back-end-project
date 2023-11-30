@@ -8,9 +8,7 @@ from src.domain.enum.status import Status
 
 class AwsService:
     def getAwsInfo():
-        options = Options()
-        options.headless = True
-        navegador = webdriver.Firefox(options=options)
+        navegador = webdriver.Chrome()
         aws_status = []
 
         tem_degradation_sp = False
