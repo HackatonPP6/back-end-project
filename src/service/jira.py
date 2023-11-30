@@ -6,8 +6,7 @@ from src.domain.logs import Logs
 class JiraService():
     def getJiraInfo():
         ini = time.time()
-        navegador = webdriver.Chrome()
-
+        navegador = webdriver.Firefox()
         tem_degradation = False
     
         try:
