@@ -66,10 +66,10 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         await asyncio.sleep(5)
         # await websocket.send_text("aa")
-        lista_jira, jira_tem_degradation = JiraService.getJiraInfo()
-        simplified_infoJira = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
-        returnDict["Jira"] = Status.DEGRADATION if jira_tem_degradation else Status.RESOLVED
-        await websocket.send_json(simplified_infoJira)
+        # lista_jira, jira_tem_degradation = JiraService.getJiraInfo()
+        # simplified_infoJira = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
+        # returnDict["Jira"] = Status.DEGRADATION if jira_tem_degradation else Status.RESOLVED
+        # await websocket.send_json(simplified_infoJira)
 
         lista_ocl, ocl_sp_tem_degradation, ocl_vi_tem_degradation = OracleService.getOracleInfo()
         simplified_infoOracle = [{"provider": item["provider"], "service": item["service"], "status": item["status"]} for item in json.loads(json.dumps(lista_ocl, indent=2))]
