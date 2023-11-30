@@ -55,7 +55,7 @@ class MongoRepo:
 
         if "Aws" in provider:
             today = datetime.datetime.now()
-            print(today)
+            print(today)    
             print(today + timedelta(days=1))
             response = self.aws.find({"data": {"$gte": today, "$lt": today + timedelta(days=1)}})
             return list(response)
