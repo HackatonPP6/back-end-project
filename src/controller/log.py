@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from src.service.oracle import OracleService
-from src.service.jira import JiraService
+from src.service.jiraService import JiraServiceApi
 from src.service.aws import AwsService
 from src.domain.logs import Logs
 from src.repository.mongo.repository import MongoRepo
@@ -34,7 +34,7 @@ class LogController:
     
     @router.get("/jiraentrypoint")
     async def jira():
-        return JiraService.getJiraInfo()
+        return JiraServiceApi.getJiraInfo()
     
     @router.get("/oracleentrypoint")
     async def oracle():
