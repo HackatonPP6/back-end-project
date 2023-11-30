@@ -42,7 +42,7 @@ class LogController:
 
     @router.get("/jiraentrypointjson")
     async def jira():
-        return JiraService.getJiraInfo()[0]
+        return JiraServiceApi.getJiraInfo()[0]
     
     @router.get("/oracleentrypointjson")
     async def oracle():
