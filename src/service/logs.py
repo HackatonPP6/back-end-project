@@ -1,5 +1,5 @@
 from src.service.oracle import OracleService
-from src.service.jira import JiraService
+from src.service.jiraService import JiraServiceApi
 from src.domain.logs import Logs
 from src.domain.enum.providers import Providers
 from src.repository.mongo.repository import MongoRepo
@@ -10,7 +10,7 @@ class LogsService:
 
     def __init__(self):
         self.repo = MongoRepo()
-        self.jira = JiraService
+        self.jira = JiraServiceApi
         self.oracle = OracleService
         self.registro_antigo = []
         self.registro_novo = []
