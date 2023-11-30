@@ -79,7 +79,6 @@ async def websocket_endpoint(websocket: WebSocket):
         returnDict["Jira"] = Status.DEGRADATION.value if jira_tem_degradation else Status.RESOLVED.value
         await websocket.send_json(returnDict)
 
-
         # lista_aws, aws_sp_tem_degradation, aws_vi_tem_degradation = AwsService.get_AWS_log()
         # simplified_infoAWS = [{"provider": item["provider"], "status": item["status"]} for item in json.loads(json.dumps(lista_aws, indent=2))]
 
@@ -94,6 +93,7 @@ origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost",
+    "http://localhost:3000"
     "http://localhost:8080",
 ]
 

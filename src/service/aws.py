@@ -7,10 +7,8 @@ from src.domain.logs import Logs
 from src.domain.enum.status import Status
 
 class AwsService:
-    def get_AWS_log():
-        options = Options()
-        options.headless = True
-        navegador = webdriver.Firefox(options=options)
+    def getAwsInfo():
+        navegador = webdriver.Chrome()
         aws_status = []
 
         tem_degradation_sp = False

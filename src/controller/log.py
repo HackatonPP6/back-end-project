@@ -2,8 +2,10 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from src.service.oracle import OracleService
 from src.service.jiraService import JiraServiceApi
+from src.service.aws import AwsService
 from src.domain.logs import Logs
 from src.repository.mongo.repository import MongoRepo
+import json
 
 from src.service.logs import LogsService
 from src.service.email import EmailService
@@ -37,6 +39,18 @@ class LogController:
     @router.get("/oracleentrypoint")
     async def oracle():
         return OracleService.getOracleInfo()
+
+    @router.get("/jiraentrypointjson")
+    async def jira():
+        return JiraServiceApi.getJiraInfo()[0]
+    
+    @router.get("/oracleentrypointjson")
+    async def oracle():
+        return OracleService.getOracleInfo()[0]
+    
+    @router.get("/awsentrypointjson")
+    async def aws():
+        return AwsService.getAwsInfo()[0]
     
     @router.get("/leva")
     async def leva():
