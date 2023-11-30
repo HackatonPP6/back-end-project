@@ -7,7 +7,7 @@ from src.domain.logs import Logs
 from src.domain.enum.status import Status
 
 class AwsService:
-    def get_AWS_log():
+    def getAwsInfo():
         options = Options()
         options.headless = True
         navegador = webdriver.Firefox(options=options)

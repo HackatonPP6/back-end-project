@@ -76,7 +76,6 @@ async def websocket_endpoint(websocket: WebSocket):
         returnDict["Oracle.Vi"] = Status.DEGRADATION.value if ocl_vi_tem_degradation else Status.RESOLVED.value
         returnDict["Oracle.SP"] = Status.DEGRADATION.value if ocl_sp_tem_degradation else Status.RESOLVED.value
 
-
         # lista_aws, aws_sp_tem_degradation, aws_vi_tem_degradation = AwsService.get_AWS_log()
         # simplified_infoAWS = [{"provider": item["provider"], "status": item["status"]} for item in json.loads(json.dumps(lista_aws, indent=2))]
 

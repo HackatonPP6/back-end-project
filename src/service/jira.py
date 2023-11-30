@@ -5,10 +5,9 @@ from src.domain.enum.status import Status
 from src.domain.logs import Logs
 class JiraService():
     def getJiraInfo():
-
-        options = webdriver.ChromeOptions()
-        options.enable_downloads = True
-        driver = webdriver.Remote(command_executor="https://backend-hacktoon.onrender.com", options=options)
+        options = Options()
+        options.headless = True
+        driver = webdriver.Firefox(options=options)
         tem_degradation = False
     
         try:
