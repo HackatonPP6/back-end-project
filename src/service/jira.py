@@ -6,15 +6,15 @@ from src.domain.logs import Logs
 class JiraService():
     def getJiraInfo():
 
-        options = Options()
-        options.headless = True
-        navegador = webdriver.Firefox(options=options)
+        options = webdriver.ChromeOptions()
+        options.enable_downloads = True
+        driver = webdriver.Remote(command_executor="https://backend-hacktoon.onrender.com", options=options)
         tem_degradation = False
     
         try:
-            navegador.get('https://jira-software.status.atlassian.com/')
+            driver.get('https://jira-software.status.atlassian.com/')
     
-            tabela = navegador.find_element(By.CLASS_NAME, 'one-column')
+            tabela = driver.find_element(By.CLASS_NAME, 'one-column')
             categorias = tabela.find_elements(By.XPATH, '*')
             brazilianReports = list()
     
@@ -32,7 +32,7 @@ class JiraService():
                 brazilianReports.append(Logs(nome, status, 'Jira'))
     
         finally:
-            navegador.quit()
+            driver.quit()
     
         returnList = []
         for x in brazilianReports:
