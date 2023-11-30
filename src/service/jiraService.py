@@ -10,14 +10,18 @@ class JiraServiceApi():
         document = json.loads(response.text)
         components = document["components"]
         jiraReports = list()
+        hasDegradation = False
         for x in components:
             name = x["name"]
             status = x["status"]
+            
             status = Status.RESOLVED.value if status == "operational" else Status.DEGRADATION.value
+            if status == Status.DEGRADATION.value:
+                hasDegradation = True
             jiraReports.append(Logs(name, status, "Jira"))
 
         returnList = []
         for x in jiraReports:
             returnList.append(Logs.dictionaryTransform(x))
-        return [returnList, status != "operational"]
+        return [returnList, hasDegradation]
     

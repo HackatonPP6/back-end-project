@@ -21,6 +21,8 @@ returnDict = {
     "Jira": Status.RESOLVED.value
 }
 
+#var ws = new WebSocket("wss://backend-hacktoon.onrender.com/ws");
+
 html = """
 <!DOCTYPE html>
 <html>
@@ -36,7 +38,7 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
-            var ws = new WebSocket("wss://backend-hacktoon.onrender.com/ws");
+            var ws = new WebSocket("ws://localhost:8000/ws");
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
