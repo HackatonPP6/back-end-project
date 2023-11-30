@@ -37,7 +37,7 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
-            var ws = new WebSocket("wss://backend-hacktoon.onrender.com//ws");
+            var ws = new WebSocket("wss://backend-hacktoon.onrender.com/ws");
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -75,6 +75,7 @@ async def websocket_endpoint(websocket: WebSocket):
         
         returnDict["Oracle.Vi"] = Status.DEGRADATION.value if ocl_vi_tem_degradation else Status.RESOLVED.value
         returnDict["Oracle.SP"] = Status.DEGRADATION.value if ocl_sp_tem_degradation else Status.RESOLVED.value
+        await websocket.send_json(returnDict)
 
 
         # lista_aws, aws_sp_tem_degradation, aws_vi_tem_degradation = AwsService.get_AWS_log()
@@ -83,7 +84,6 @@ async def websocket_endpoint(websocket: WebSocket):
         # returnDict["Aws.Vi"] = Status.DEGRADATION.value if aws_vi_tem_degradation else Status.RESOLVED.value
         # returnDict["Aws.SP"] = Status.DEGRADATION.value if aws_sp_tem_degradation else Status.RESOLVED.value
 
-        await websocket.send_json(returnDict)
         # await websocket.send_json(simplified_infoAWS)
         #TODO: Após retornar ao frontend, chamar api mongodb
 
