@@ -8,10 +8,18 @@ from src.repository.mongo.repository import MongoRepo
 import json
 
 from src.service.logs import LogsService
+from src.service.email import EmailService
 
 class LogController:
     router = APIRouter()
 
+    class EmailDto(BaseModel):
+        assunto:str
+        body:str
+        destinatario:str
+    @router.post("/sendemail")
+    async def sendEmail(body: EmailDto):
+        return EmailService.enviar_alerta(body.assunto, body.body, body.destinatario)
     @router.get("/allLogs")
     async def allLogs():
         return LogsService().getAllLogs()

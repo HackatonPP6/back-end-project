@@ -65,16 +65,17 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         await asyncio.sleep(5)
-        lista_jira, jira_tem_degradation = JiraService.getJiraInfo()
-        simplified_infoJira = [{"provider": item["provider"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
-        returnDict["Jira"] = Status.DEGRADATION.value if jira_tem_degradation else Status.RESOLVED.value
-        await websocket.send_json(simplified_infoJira)
+        # lista_jira, jira_tem_degradation = JiraService.getJiraInfo()
+        # simplified_infoJira = [{"provider": item["provider"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
+        # returnDict["Jira"] = Status.DEGRADATION.value if jira_tem_degradation else Status.RESOLVED.value
+        # await websocket.send_json(simplified_infoJira)
 
         lista_ocl, ocl_sp_tem_degradation, ocl_vi_tem_degradation = OracleService.getOracleInfo()
         simplified_infoOracle = [{"provider": item["provider"], "status": item["status"]} for item in json.loads(json.dumps(lista_ocl, indent=2))]
         
         returnDict["Oracle.Vi"] = Status.DEGRADATION.value if ocl_vi_tem_degradation else Status.RESOLVED.value
         returnDict["Oracle.SP"] = Status.DEGRADATION.value if ocl_sp_tem_degradation else Status.RESOLVED.value
+        await websocket.send_json(returnDict)
 
         # lista_aws, aws_sp_tem_degradation, aws_vi_tem_degradation = AwsService.get_AWS_log()
         # simplified_infoAWS = [{"provider": item["provider"], "status": item["status"]} for item in json.loads(json.dumps(lista_aws, indent=2))]
@@ -82,7 +83,6 @@ async def websocket_endpoint(websocket: WebSocket):
         # returnDict["Aws.Vi"] = Status.DEGRADATION.value if aws_vi_tem_degradation else Status.RESOLVED.value
         # returnDict["Aws.SP"] = Status.DEGRADATION.value if aws_sp_tem_degradation else Status.RESOLVED.value
 
-        await websocket.send_json(returnDict)
         # await websocket.send_json(simplified_infoAWS)
         #TODO: Após retornar ao frontend, chamar api mongodb
 
