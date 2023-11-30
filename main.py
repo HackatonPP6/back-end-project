@@ -1,11 +1,18 @@
 import uvicorn
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, WebSocket
+import asyncio
 from src.controller.log import LogController
 from src.controller.cache import CacheController
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
-
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        await asyncio.sleep(10)
+        mock_message = {"Aws.virginia": "active", "Aws.saoPaulo": "active", "Jira":"Instável", "Oracle.Vinhedo": 'Fora do Ar', 'Oracle.SaoPaulo': 'active' }
+        await websocket.send_json(mock_message)
 
 origins = [
     "http://localhost.tiangolo.com",
