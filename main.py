@@ -65,7 +65,7 @@ async def get():
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
-        await asyncio.sleep(3)
+        await asyncio.sleep(2)
         lista_jira, jira_tem_degradation = JiraServiceApi.getJiraInfo()
         simplified_infoJira = [{"provider": item["provider"], "status": item["status"]} for item in json.loads(json.dumps(lista_jira, indent=2))]
         returnDict["Jira"] = Status.DEGRADATION.value if jira_tem_degradation else Status.RESOLVED.value
